@@ -1,10 +1,11 @@
-import java.io.*;
+
 import java.nio.file.Files;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -28,6 +29,7 @@ public class siegesettings {
         hSensPanel.setLayout(new GridLayout(3, 1));
 
         // get Documents path
+        // tbh idk how this works ty stack overflow 🙏
         JFileChooser fr = new JFileChooser();
         FileSystemView fw = fr.getFileSystemView();
         String settingsPath = fw.getDefaultDirectory().toString();
