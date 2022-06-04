@@ -15,21 +15,28 @@ import javax.swing.filechooser.FileSystemView;
 
 public class siegesettings {
     public static int vF, hF, fpsF;
-    public static double fovF,multiplierF,refreshRateF;
+    public static double fovF,multiplierF,refreshRateF,adsMultiF;
     public static void createUI() throws FileNotFoundException {
         // initial jframe setup
+        JTabbedPane categories = new JTabbedPane();
+        JPanel sensPanel = new JPanel();
+        sensPanel.setLayout(new GridLayout(6,1));
+        JPanel displayPanel = new JPanel();
+        displayPanel.setLayout(new GridLayout(6,1));
+
+
         JFrame frame = new JFrame();
-        frame.setSize(600, 800);
+        frame.setSize(900, 1000);
         frame.setTitle("R6 Siege Settings");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JPanel ySensPanel = new JPanel();
-        JPanel hSensPanel = new JPanel();
-        frame.setLayout(new GridLayout(7, 1));
-        ySensPanel.setLayout(new GridLayout(3, 1));
-        hSensPanel.setLayout(new GridLayout(3, 1));
+        frame.setLayout(new GridLayout(2, 1));
+
+        categories.addTab("Sensitivity", sensPanel);
+        categories.addTab("Display", displayPanel);
+
 
         // get Documents path
-        // tbh idk how this works ty stack overflow 🙏
+        // tbh idk how this works ty stack overflow
         JFileChooser fr = new JFileChooser();
         FileSystemView fw = fr.getFileSystemView();
         String settingsPath = fw.getDefaultDirectory().toString();
@@ -66,9 +73,9 @@ public class siegesettings {
             }
             scanner.close();
             int vSens, hSens, fpsLimit;
-            double refreshRate, multiplier, fov;
+            double refreshRate, multiplier, fov, adsMulti;
             vSens = hSens = fpsLimit = 0;
-            refreshRate = multiplier = fov = 0;
+            refreshRate = multiplier = fov = adsMulti = 0;
             for (String x : GameSettingsFile) {
                 if (x.contains("MousePitchSensitivity=")) {
                     vSens = Integer.parseInt(x.substring(1 + x.indexOf("=")));
@@ -87,6 +94,9 @@ public class siegesettings {
                 }
                 if (x.contains("MouseSensitivityMultiplierUnit=")) {
                     multiplier = Double.parseDouble(x.substring(1 + x.indexOf("=")));
+                }
+                if (x.contains("ADSMouseMultiplierUnit=")) {
+                    adsMulti = Double.parseDouble(x.substring(1 + x.indexOf("=")));
                 }
             }
 
@@ -155,6 +165,7 @@ public class siegesettings {
             // refresh rate selection box
             Double[] rrList = new Double[] { 30.0, 60.0, 75.0, 120.0, 144.0, 165.0, 240.0 };
             JComboBox<Double> refreshRates = new JComboBox<Double>(rrList);
+            refreshRates.setSelectedItem(refreshRate);
             refreshRates.addPropertyChangeListener(new PropertyChangeListener() {
 
                 @Override
@@ -166,8 +177,20 @@ public class siegesettings {
             JLabel currentRR = new JLabel("Current Refresh Rate is set to: " + Double.toString(refreshRate));
 
             // fov slider
-            JSlider fovSlider = new JSlider(0, 90, (int) fov);
-            JLabel fovLabel = new JLabel("Current FOV: " + Double.toString(fov));
+            JLabel fovLabel = new JLabel("Current FOV: " + fov);
+            JLabel fovCurrentLabel = new JLabel("Currently selected FOV: " + fov);
+            JSlider fovSlider = new JSlider(60, 90, (int) fov);
+            fovSlider.addChangeListener(new ChangeListener() {
+
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    fovF = fovSlider.getValue();
+                    fovCurrentLabel.setText("Currently selected FOV: " + fovF);
+                }
+                
+            });
+            
+
 
             // fps limit
             JCheckBox fpsLimitBox = new JCheckBox();
@@ -230,7 +253,6 @@ public class siegesettings {
                     }
                     try {
                         for (String x: filepaths){
-                            File writeToFile = new File(x);
                             FileWriter fwriter = new FileWriter(x, false);
                             BufferedWriter bwriter = new BufferedWriter(fwriter);
                             for (String y : GameSettingsFile){
@@ -251,10 +273,34 @@ public class siegesettings {
             
             
 
-            // figure out the damn layout u idiot
+            /*
+:::::::::: ::::::::::: ::::::::  :::    ::: :::::::::  ::::::::::       ::::::::  :::    ::: :::::::::::      ::::::::::: :::    ::: ::::::::::      :::            :::   :::   :::  ::::::::  :::    ::: ::::::::::: 
+:+:            :+:    :+:    :+: :+:    :+: :+:    :+: :+:             :+:    :+: :+:    :+:     :+:              :+:     :+:    :+: :+:             :+:          :+: :+: :+:   :+: :+:    :+: :+:    :+:     :+:     
++:+            +:+    +:+        +:+    +:+ +:+    +:+ +:+             +:+    +:+ +:+    +:+     +:+              +:+     +:+    +:+ +:+             +:+         +:+   +:+ +:+ +:+  +:+    +:+ +:+    +:+     +:+     
+:#::+::#       +#+    :#:        +#+    +:+ +#++:++#:  +#++:++#        +#+    +:+ +#+    +:+     +#+              +#+     +#++:++#++ +#++:++#        +#+        +#++:++#++: +#++:   +#+    +:+ +#+    +:+     +#+     
++#+            +#+    +#+   +#+# +#+    +#+ +#+    +#+ +#+             +#+    +#+ +#+    +#+     +#+              +#+     +#+    +#+ +#+             +#+        +#+     +#+  +#+    +#+    +#+ +#+    +#+     +#+     
+#+#            #+#    #+#    #+# #+#    #+# #+#    #+# #+#             #+#    #+# #+#    #+#     #+#              #+#     #+#    #+# #+#             #+#        #+#     #+#  #+#    #+#    #+# #+#    #+#     #+#     
+###        ########### ########   ########  ###    ### ##########       ########   ########      ###              ###     ###    ### ##########      ########## ###     ###  ###     ########   ########      ###                                                                                                                                                                                     
+             */
             // creates jframe
             JSeparator s = new JSeparator();
             //frame.add(sensBox);
+            sensPanel.add(ycurrentSens);
+            sensPanel.add(ycurrentSelSens);
+            sensPanel.add(ysensSlider);
+            sensPanel.add(hcurrentSens);
+            sensPanel.add(hcurrentSelSens);
+            sensPanel.add(hsensSlider);
+
+            displayPanel.add(fovLabel);
+            displayPanel.add(fovCurrentLabel);
+            displayPanel.add(fovSlider);
+            displayPanel.add(currentRR);
+            displayPanel.add(refreshRates);
+
+            frame.add(categories);
+            
+            /* 
             ySensPanel.add(ysensSlider);
             ySensPanel.add(ycurrentSens);
             ySensPanel.add(ycurrentSelSens);
@@ -265,10 +311,19 @@ public class siegesettings {
             hSensPanel.add(hcurrentSelSens);
             frame.add(hSensPanel);
             
+
+
             frame.add(currentRR);
             frame.add(refreshRates);
-            frame.add(applyButton);
             
+            frame.add(fovLabel);
+            frame.add(fovCurrentLabel);
+            frame.add(fovSlider);
+            */
+            
+            ysensSlider.setBackground(Color.BLACK);
+            ysensSlider.setForeground(Color.white);
+            frame.add(applyButton);
             frame.setVisible(true);
             
             // frame.add(fovLabel);
