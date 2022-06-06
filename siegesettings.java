@@ -1,12 +1,26 @@
+/*
+ * TODO:
+ *      -Ensure multiplier inputs are valid and apply them
+ *      -ADS Sens (Standard, advanced, and each sight)
+ *      -FPS Limit
+ *      -maybe aspect ratio?
+ * 
+ */
+
+
 
 import java.nio.file.Files;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
@@ -17,23 +31,38 @@ public class siegesettings {
     public static int vF, hF, fpsF;
     public static double fovF,multiplierF,refreshRateF,adsMultiF;
     public static void createUI() throws FileNotFoundException {
+        UIManager.put("TabbedPane.selected", Color.BLACK);
+        UIManager.put("TabbedPane.contentAreaColor", Color.BLACK);
+        UIManager.put("TabbedPane.focus", Color.BLACK);
+
+
         // initial jframe setup
         JTabbedPane categories = new JTabbedPane();
         JPanel sensPanel = new JPanel();
-        sensPanel.setLayout(new GridLayout(6,1));
+        sensPanel.setLayout(new GridLayout(10,1));
+        
+        
         JPanel displayPanel = new JPanel();
         displayPanel.setLayout(new GridLayout(6,1));
+        
 
 
         JFrame frame = new JFrame();
-        frame.setSize(900, 1000);
+        try {
+            frame.setIconImage(ImageIO.read(new File("res/r6s48.png")));
+        }
+        catch (IOException exc) {
+            exc.printStackTrace();
+        }
+        frame.setSize(300, 750);
         frame.setTitle("R6 Siege Settings");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(2, 1));
-
+        GridBagLayout layout = new GridBagLayout();
+        layout.rowHeights = new int[] {200,50};
+        frame.setLayout(layout);
+        GridBagConstraints c = new GridBagConstraints();
         categories.addTab("Sensitivity", sensPanel);
         categories.addTab("Display", displayPanel);
-
 
         // get Documents path
         // tbh idk how this works ty stack overflow
@@ -107,13 +136,16 @@ public class siegesettings {
                 System.out.println("Found GameSettings.ini in: "+file);
             }
 
+
+            //
+            //   SENS PANEL SETUP
+            //
             // Create sensitivity sliders       
             JSlider ysensSlider = new JSlider(0, 100, vSens);
             ysensSlider.setBorder(new EmptyBorder(10,10,10,10));
             ysensSlider.setPaintTrack(true);
-            ysensSlider.setPaintTicks(true);
             ysensSlider.setPaintLabels(true);
-            ysensSlider.setMajorTickSpacing(50);
+            ysensSlider.setMajorTickSpacing(25);
             ysensSlider.setMinorTickSpacing(1);
             ysensSlider.setSnapToTicks(true);
             JLabel ycurrentSens = new JLabel("Current Y Sensitivity: " + vSens, SwingConstants.CENTER);
@@ -129,9 +161,8 @@ public class siegesettings {
             JSlider hsensSlider = new JSlider(0, 100, hSens);
             hsensSlider.setBorder(new EmptyBorder(10,10,10,10));
             hsensSlider.setPaintTrack(true);
-            hsensSlider.setPaintTicks(true);
             hsensSlider.setPaintLabels(true);
-            hsensSlider.setMajorTickSpacing(50);
+            hsensSlider.setMajorTickSpacing(25);
             hsensSlider.setMinorTickSpacing(1);
             hsensSlider.setSnapToTicks(true);
             JLabel hcurrentSens = new JLabel("Current X Sensitivity: " + hSens, SwingConstants.CENTER);
@@ -144,7 +175,62 @@ public class siegesettings {
                 }
             });
 
-            /* 
+            //MULTIPLIER
+            JLabel currentMultiplier = new JLabel();
+            currentMultiplier.setHorizontalAlignment(SwingConstants.CENTER);
+            currentMultiplier.setText("Current Multiplier = " + multiplier);
+
+            JTextField multiplierTextField = new JTextField("Type desired multiplier",5);
+            multiplierTextField.addFocusListener(new FocusListener(){
+
+                @Override
+                public void focusGained(FocusEvent e) {
+                    multiplierTextField.setText("");
+                    
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    if (multiplierTextField.getText().equals("")){
+                        multiplierTextField.setText("Type desired multiplier");
+                    }
+                }
+                
+            });
+            multiplierTextField.setAlignmentX(SwingConstants.CENTER);
+            multiplierTextField.setToolTipText("<html>"+"Default is 0.02"+"<br>"+"Change if you know what you're doing"+"</html>");
+
+            //ADS MULTIPLIER
+            JLabel currentADSMultiplier = new JLabel();
+            currentADSMultiplier.setHorizontalAlignment(SwingConstants.CENTER);
+            currentADSMultiplier.setText("Current ADS Multiplier = "+adsMulti);
+            JTextField ADSmultiplierTextField = new JTextField("Type desired ADS multiplier",5);
+            ADSmultiplierTextField.addFocusListener(new FocusListener(){
+
+                @Override
+                public void focusGained(FocusEvent e) {
+                    ADSmultiplierTextField.setText("");
+                    
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    if (ADSmultiplierTextField.getText().equals("")){
+                        ADSmultiplierTextField.setText("Type desired ADS multiplier");
+                    }
+                }
+                
+            });
+            ADSmultiplierTextField.setAlignmentX(SwingConstants.CENTER);
+            ADSmultiplierTextField.setToolTipText("<html>"+"Default is 0.02"+"<br>"+"Change if you know what you're doing"+"</html>");
+
+
+
+
+
+            /*  for locking the two sens sliders together for equal x and y sens
+                dont know how to move both at the same time lol
+
             JCheckBox sensBox = new JCheckBox("Lock X and Y Sensitivity?");
             sensBox.addActionListener(new ActionListener(){
 
@@ -161,7 +247,8 @@ public class siegesettings {
             */
             
             //
-
+            //   DISPLAY PANEL SETUP
+            //
             // refresh rate selection box
             Double[] rrList = new Double[] { 30.0, 60.0, 75.0, 120.0, 144.0, 165.0, 240.0 };
             JComboBox<Double> refreshRates = new JComboBox<Double>(rrList);
@@ -174,11 +261,11 @@ public class siegesettings {
                 }
                 
             });
-            JLabel currentRR = new JLabel("Current Refresh Rate is set to: " + Double.toString(refreshRate));
+            JLabel currentRR = new JLabel("Current Refresh Rate is set to: " + Double.toString(refreshRate), SwingConstants.CENTER);
 
             // fov slider
-            JLabel fovLabel = new JLabel("Current FOV: " + fov);
-            JLabel fovCurrentLabel = new JLabel("Currently selected FOV: " + fov);
+            JLabel fovLabel = new JLabel("Current FOV: " + fov, SwingConstants.CENTER);
+            JLabel fovCurrentLabel = new JLabel("Currently selected FOV: " + fov, SwingConstants.CENTER);
             JSlider fovSlider = new JSlider(60, 90, (int) fov);
             fovSlider.addChangeListener(new ChangeListener() {
 
@@ -291,6 +378,10 @@ public class siegesettings {
             sensPanel.add(hcurrentSens);
             sensPanel.add(hcurrentSelSens);
             sensPanel.add(hsensSlider);
+            sensPanel.add(currentMultiplier);
+            sensPanel.add(multiplierTextField);
+            sensPanel.add(currentADSMultiplier);
+            sensPanel.add(ADSmultiplierTextField);
 
             displayPanel.add(fovLabel);
             displayPanel.add(fovCurrentLabel);
@@ -323,7 +414,14 @@ public class siegesettings {
             
             ysensSlider.setBackground(Color.BLACK);
             ysensSlider.setForeground(Color.white);
-            frame.add(applyButton);
+            hsensSlider.setBackground(Color.BLACK);
+            hsensSlider.setForeground(Color.white);
+            c.gridx = 0;
+            c.gridy = 3;
+            frame.add(applyButton,c);
+            categories.setBackground(Color.GRAY);
+            categories.setForeground(Color.WHITE);
+            frame.setForeground(Color.BLACK);
             frame.setVisible(true);
             
             // frame.add(fovLabel);
