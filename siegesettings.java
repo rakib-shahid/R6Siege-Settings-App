@@ -1,7 +1,7 @@
 /*
  * TODO:
  *      -Ensure multiplier inputs are valid and apply them
- *      -ADS Sens (Standard, advanced, and each sight)
+ *      DONE-ADS Sens (Standard, advanced, and each sight)
  *      -FPS Limit
  *      -maybe aspect ratio?
  * 
@@ -57,7 +57,7 @@ public class siegesettings {
         catch (IOException exc) {
             exc.printStackTrace();
         }
-        frame.setSize(300, 750);
+        frame.setSize(300, 850);
         frame.setTitle("R6 Siege Settings");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         GridBagLayout layout = new GridBagLayout();
@@ -649,6 +649,10 @@ public class siegesettings {
                         }
                         else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity12x=")) {
                             GameSettingsFile.set(i,"ADSMouseSensitivity12x="+ads12f);
+                            System.out.println(GameSettingsFile.get(i));
+                        }
+                        else if (GameSettingsFile.get(i).contains("ADSMouseSensitivityGlobal=")) {
+                            GameSettingsFile.set(i,"ADSMouseSensitivityGlobal="+adsGlobalF);
                             System.out.println(GameSettingsFile.get(i));
                         }
                         
