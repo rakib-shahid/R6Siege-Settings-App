@@ -28,8 +28,9 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileSystemView;
 
 public class siegesettings {
-    public static int vF, hF, fpsF;
+    public static int vF, hF, fpsF,ads1f,ads15f,ads2f,ads25f,ads3f,ads4f,ads5f,ads12f,adsGlobalF;
     public static double fovF,multiplierF,refreshRateF,adsMultiF;
+    public static boolean adsSpecific;
     public static void createUI() throws FileNotFoundException {
         UIManager.put("TabbedPane.selected", Color.BLACK);
         UIManager.put("TabbedPane.contentAreaColor", Color.BLACK);
@@ -40,11 +41,13 @@ public class siegesettings {
         JTabbedPane categories = new JTabbedPane();
         JPanel sensPanel = new JPanel();
         sensPanel.setLayout(new GridLayout(10,1));
+
+        JPanel adsPanel = new JPanel();
+        adsPanel.setLayout(new GridLayout(19,1));
         
         
         JPanel displayPanel = new JPanel();
         displayPanel.setLayout(new GridLayout(6,1));
-        
 
 
         JFrame frame = new JFrame();
@@ -62,6 +65,7 @@ public class siegesettings {
         frame.setLayout(layout);
         GridBagConstraints c = new GridBagConstraints();
         categories.addTab("Sensitivity", sensPanel);
+        categories.addTab("ADS", adsPanel);
         categories.addTab("Display", displayPanel);
 
         // get Documents path
@@ -92,7 +96,10 @@ public class siegesettings {
             System.out.println("WARNING\nYou have more than 1 UPlay account on this PC");
         }
 
-        // reads initial values from gamesettings.ini (line by line, find better solution if possible)
+        //
+        //  Read in initial values
+        //
+        //////////
         ArrayList<String> GameSettingsFile = new ArrayList<String>();
         if (filepaths.size() != 0) {
             File GameSettings = new File(filepaths.get(0));
@@ -102,9 +109,12 @@ public class siegesettings {
             }
             scanner.close();
             int vSens, hSens, fpsLimit;
+            
             double refreshRate, multiplier, fov, adsMulti;
             vSens = hSens = fpsLimit = 0;
             refreshRate = multiplier = fov = adsMulti = 0;
+            int ads1x,ads15x,ads2x,ads25x,ads3x,ads4x,ads5x,ads12x,adsGlobal;
+            ads1x=ads15x=ads2x=ads25x=ads3x=ads4x=ads5x=ads12x=adsGlobal=0;
             for (String x : GameSettingsFile) {
                 if (x.contains("MousePitchSensitivity=")) {
                     vSens = Integer.parseInt(x.substring(1 + x.indexOf("=")));
@@ -127,6 +137,51 @@ public class siegesettings {
                 if (x.contains("ADSMouseMultiplierUnit=")) {
                     adsMulti = Double.parseDouble(x.substring(1 + x.indexOf("=")));
                 }
+                if (x.contains("ADSMouseUseSpecific=")){
+                    if (Integer.parseInt(x.substring(1 + x.indexOf("="))) == 1){
+                        adsSpecific = true;
+                    }
+                    else {
+                        adsSpecific = false;
+                    }
+                }
+                if (x.contains("ADSMouseSensitivity1x=")) {
+                    ads1x = Integer.parseInt(x.substring(1 + x.indexOf("=")));
+                    ads1f = ads1x;
+                }
+                if (x.contains("ADSMouseSensitivity1xHalf=")) {
+                    ads15x = Integer.parseInt(x.substring(1 + x.indexOf("=")));
+                    ads15f = ads15x;
+                }
+                if (x.contains("ADSMouseSensitivity2x=")) {
+                    ads2x = Integer.parseInt(x.substring(1 + x.indexOf("=")));
+                    ads2f = ads2x;
+                }
+                if (x.contains("ADSMouseSensitivity2xHalf=")) {
+                    ads25x = Integer.parseInt(x.substring(1 + x.indexOf("=")));
+                    ads25f = ads25x;
+                }
+                if (x.contains("ADSMouseSensitivity3x=")) {
+                    ads3x = Integer.parseInt(x.substring(1 + x.indexOf("=")));
+                    ads3f = ads3x;
+                }
+                if (x.contains("ADSMouseSensitivity4x=")) {
+                    ads4x = Integer.parseInt(x.substring(1 + x.indexOf("=")));
+                    ads4f = ads4x;
+                }
+                if (x.contains("ADSMouseSensitivity5x=")) {
+                    ads5x = Integer.parseInt(x.substring(1 + x.indexOf("=")));
+                    ads5f = ads5x;
+                }
+                if (x.contains("ADSMouseSensitivity12x=")) {
+                    ads12x = Integer.parseInt(x.substring(1 + x.indexOf("=")));
+                    ads12f = ads12x;
+                }
+                if (x.contains("ADSMouseSensitivityGlobal=")) {
+                    adsGlobal = Integer.parseInt(x.substring(1 + x.indexOf("=")));
+                    adsGlobalF = adsGlobal;
+                }
+
             }
 
             // TESTING
@@ -137,10 +192,18 @@ public class siegesettings {
             }
 
 
+            
+            
+            //////////////////////
+            //                  //
+            //    SENS PANEL    //
+            //                  //
+            //////////////////////
+
             //
-            //   SENS PANEL SETUP
+            //    Create sensitivity sliders     
             //
-            // Create sensitivity sliders       
+            /////////  
             JSlider ysensSlider = new JSlider(0, 100, vSens);
             ysensSlider.setBorder(new EmptyBorder(10,10,10,10));
             ysensSlider.setPaintTrack(true);
@@ -175,12 +238,15 @@ public class siegesettings {
                 }
             });
 
-            //MULTIPLIER
+            //
+            //  Mouse Multiplier
+            //
+            //////////
             JLabel currentMultiplier = new JLabel();
             currentMultiplier.setHorizontalAlignment(SwingConstants.CENTER);
             currentMultiplier.setText("Current Multiplier = " + multiplier);
 
-            JTextField multiplierTextField = new JTextField("Type desired multiplier",5);
+            JTextField multiplierTextField = new JTextField("Type desired mouse multiplier",5);
             multiplierTextField.addFocusListener(new FocusListener(){
 
                 @Override
@@ -200,7 +266,10 @@ public class siegesettings {
             multiplierTextField.setAlignmentX(SwingConstants.CENTER);
             multiplierTextField.setToolTipText("<html>"+"Default is 0.02"+"<br>"+"Change if you know what you're doing"+"</html>");
 
-            //ADS MULTIPLIER
+            //
+            //  ADS Multiplier
+            //
+            //////////
             JLabel currentADSMultiplier = new JLabel();
             currentADSMultiplier.setHorizontalAlignment(SwingConstants.CENTER);
             currentADSMultiplier.setText("Current ADS Multiplier = "+adsMulti);
@@ -224,10 +293,6 @@ public class siegesettings {
             ADSmultiplierTextField.setAlignmentX(SwingConstants.CENTER);
             ADSmultiplierTextField.setToolTipText("<html>"+"Default is 0.02"+"<br>"+"Change if you know what you're doing"+"</html>");
 
-
-
-
-
             /*  for locking the two sens sliders together for equal x and y sens
                 dont know how to move both at the same time lol
 
@@ -245,11 +310,204 @@ public class siegesettings {
                     }
                 }});
             */
+
+
+
+            //////////////////////
+            //                  //
+            //  ADS SENS PANEL  //
+            //                  //
+            //////////////////////
+
+            JLabel adsGlobalLabel = new JLabel();
+            adsGlobalLabel.setText("Currently selected global sens: "+adsGlobal);
+            JSlider adsGlobalSlider = new JSlider(1, 200, adsGlobal);
+            adsGlobalSlider.addChangeListener(new ChangeListener() {
+
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    adsGlobalF = adsGlobalSlider.getValue();
+                    adsGlobalLabel.setText("Currently selected global sens: "+adsGlobalF);
+                }
+                
+            });
+            adsGlobalSlider.setPaintTrack(true);
+            adsGlobalSlider.setPaintLabels(true);
+            adsGlobalSlider.setMajorTickSpacing(99);
+            adsGlobalSlider.setMinorTickSpacing(1);
+            adsGlobalSlider.setSnapToTicks(true);
+
+            JCheckBox adsSimple = new JCheckBox("Using standard ADS sens");
+            adsSimple.setToolTipText("<html>"+"Check this box to use 1 global sensitivity for all sights<br>or uncheck it to use individual sensitivities for each sight"+"</html>");
+            if (!adsSpecific){
+                adsSimple.setSelected(true);
+                adsSimple.setText("Using standard ADS sens");
+            }
+            else {
+                adsSimple.setSelected(false);
+                adsSimple.setText("Using advanced ADS sens");
+            }
+            adsSimple.addActionListener(new ActionListener(){
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (adsSimple.isSelected()){
+                        adsSpecific = false;
+                        adsSimple.setText("Using standard ADS sens");
+                    }
+                    else {
+                        adsSpecific = true;
+                        adsSimple.setText("Using advanced ADS sens");
+                    }
+                    
+                }
+
+            });
             
+            JLabel adsLabel1 = new JLabel();
+            adsLabel1.setText("Currently selected 1x sens: "+ads1f);
+            JSlider adsSlider1 = new JSlider(1, 200, ads1x);
+            adsSlider1.addChangeListener(new ChangeListener() {
+
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    ads1f = adsSlider1.getValue();
+                    adsLabel1.setText("Currently selected 1x sens: "+ads1f);
+                }
+                
+            });
+            adsSlider1.setPaintTrack(true);
+            adsSlider1.setPaintLabels(true);
+            adsSlider1.setMajorTickSpacing(99);
+            adsSlider1.setMinorTickSpacing(1);
+            adsSlider1.setSnapToTicks(true);
+            JLabel adsLabel15 = new JLabel("Currently selected 1.5x sens: "+ads15f);
+            JSlider adsSlider15 = new JSlider(1, 200, ads15x);
+            adsSlider15.addChangeListener(new ChangeListener() {
+
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    ads15f = adsSlider15.getValue();
+                    adsLabel15.setText("Currently selected 1.5x sens: "+ads15f);
+                }
+                
+            });
+            adsSlider15.setPaintTrack(true);
+            adsSlider15.setPaintLabels(true);
+            adsSlider15.setMajorTickSpacing(99);
+            adsSlider15.setMinorTickSpacing(1);
+            adsSlider15.setSnapToTicks(true);
+            JSlider adsSlider2 = new JSlider(1, 200, ads2x);
+            JLabel adsLabel2 = new JLabel("Currently selected 2x sens: "+ads2f);
+            adsSlider2.addChangeListener(new ChangeListener() {
+
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    ads2f = adsSlider2.getValue();
+                    adsLabel2.setText("Currently selected 2x sens: "+ads2f);
+                }
+                
+            });
+            adsSlider2.setPaintTrack(true);
+            adsSlider2.setPaintLabels(true);
+            adsSlider2.setMajorTickSpacing(99);
+            adsSlider2.setMinorTickSpacing(1);
+            adsSlider2.setSnapToTicks(true);
+            JSlider adsSlider25 = new JSlider(1, 200, ads25x);
+            JLabel adsLabel25 = new JLabel("Currently selected 2.5x sens: "+ads25f);
+            adsSlider25.addChangeListener(new ChangeListener() {
+
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    ads25f = adsSlider25.getValue();
+                    adsLabel25.setText("Currently selected 2.5x sens: "+ads25f);
+                }
+                
+            });
+            adsSlider25.setPaintTrack(true);
+            adsSlider25.setPaintLabels(true);
+            adsSlider25.setMajorTickSpacing(99);
+            adsSlider25.setMinorTickSpacing(1);
+            adsSlider25.setSnapToTicks(true);
+            JSlider adsSlider3 = new JSlider(1, 200, ads3x);
+            JLabel adsLabel3 = new JLabel("Currently selected 3x sens: "+ads3f);
+            adsSlider3.addChangeListener(new ChangeListener() {
+
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    ads3f = adsSlider3.getValue();
+                    adsLabel3.setText("Currently selected 3x sens: "+ads3f);
+                }
+                
+            });
+            adsSlider3.setPaintTrack(true);
+            adsSlider3.setPaintLabels(true);
+            adsSlider3.setMajorTickSpacing(99);
+            adsSlider3.setMinorTickSpacing(1);
+            adsSlider3.setSnapToTicks(true);
+            JSlider adsSlider4 = new JSlider(1, 200, ads4x);
+            JLabel adsLabel4 = new JLabel("Currently selected 4x sens: "+ads4f);
+            adsSlider4.addChangeListener(new ChangeListener() {
+
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    ads4f = adsSlider4.getValue();
+                    adsLabel4.setText("Currently selected 4x sens: "+ads4f);
+                }
+                
+            });
+            adsSlider4.setPaintTrack(true);
+            adsSlider4.setPaintLabels(true);
+            adsSlider4.setMajorTickSpacing(99);
+            adsSlider4.setMinorTickSpacing(1);
+            adsSlider4.setSnapToTicks(true);
+            JSlider adsSlider5 = new JSlider(1, 200, ads5x);
+            JLabel adsLabel5 = new JLabel("Currently selected 5x sens: "+ads5f);
+            adsSlider5.addChangeListener(new ChangeListener() {
+
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    ads5f = adsSlider5.getValue();
+                    adsLabel5.setText("Currently selected 5x sens: "+ads5f);
+                }
+                
+            });
+            adsSlider5.setPaintTrack(true);
+            adsSlider5.setPaintLabels(true);
+            adsSlider5.setMajorTickSpacing(99);
+            adsSlider5.setMinorTickSpacing(1);
+            adsSlider5.setSnapToTicks(true);
+            JSlider adsSlider12 = new JSlider(1, 200, ads12x);
+            JLabel adsLabel12 = new JLabel("Currently selected 12x sens: "+ads12f);
+            adsSlider12.addChangeListener(new ChangeListener() {
+
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    ads12f = adsSlider12.getValue();
+                    adsLabel12.setText("Currently selected 12x sens: "+ads12f);
+                }
+                
+            });
+            adsSlider12.setPaintTrack(true);
+            adsSlider12.setPaintLabels(true);
+            adsSlider12.setMajorTickSpacing(99);
+            adsSlider12.setMinorTickSpacing(1);
+            adsSlider12.setSnapToTicks(true);
+
+
+            
+            
+            //////////////////////
+            //                  //
+            //  DISPLAY  PANEL  //
+            //                  //
+            //////////////////////
+
+
             //
-            //   DISPLAY PANEL SETUP
+            //  Refresh rate selection box
             //
-            // refresh rate selection box
+            //////////
             Double[] rrList = new Double[] { 30.0, 60.0, 75.0, 120.0, 144.0, 165.0, 240.0 };
             JComboBox<Double> refreshRates = new JComboBox<Double>(rrList);
             refreshRates.setSelectedItem(refreshRate);
@@ -263,10 +521,21 @@ public class siegesettings {
             });
             JLabel currentRR = new JLabel("Current Refresh Rate is set to: " + Double.toString(refreshRate), SwingConstants.CENTER);
 
-            // fov slider
+            //
+            //  FOV Slider
+            //
+            //////////
             JLabel fovLabel = new JLabel("Current FOV: " + fov, SwingConstants.CENTER);
             JLabel fovCurrentLabel = new JLabel("Currently selected FOV: " + fov, SwingConstants.CENTER);
             JSlider fovSlider = new JSlider(60, 90, (int) fov);
+            fovSlider.setPaintTrack(true);
+            fovSlider.setPaintLabels(true);
+            fovSlider.setPaintTicks(true);
+            fovSlider.setMajorTickSpacing(10);
+            fovSlider.setMinorTickSpacing(1);
+            fovSlider.setSnapToTicks(true);
+            fovSlider.setBackground(Color.BLACK);
+            fovSlider.setForeground(Color.WHITE);
             fovSlider.addChangeListener(new ChangeListener() {
 
                 @Override
@@ -279,11 +548,18 @@ public class siegesettings {
             
 
 
-            // fps limit
+            //
+            //  FPS Limit (not yet implemented)
+            //
+            //////////
             JCheckBox fpsLimitBox = new JCheckBox();
 
             
-            //creates a backup file of settings called GameSettings.ini.backup
+            
+            //
+            //  Create backup files
+            //
+            //////////
             for (String x : filepaths){
                 String backupPath = x+".backup";
                 File backupFile = new File(backupPath);
@@ -301,7 +577,10 @@ public class siegesettings {
                 }
             }
 
-            //Apply button
+            //
+            //  Apply button
+            //
+            //////////
             JButton applyButton = new JButton("Apply changes");
             applyButton.addActionListener(new ActionListener(){
 
@@ -334,6 +613,42 @@ public class siegesettings {
                         }
                         else if (GameSettingsFile.get(i).contains("MouseSensitivityMultiplierUnit=")) {
                             GameSettingsFile.set(i,"MouseSensitivityMultiplierUnit="+multiplierF);
+                            System.out.println(GameSettingsFile.get(i));
+                        }
+                        else if (GameSettingsFile.get(i).contains("ADSMouseMultiplierUnit=")) {
+                            GameSettingsFile.set(i,"ADSMouseMultiplierUnit="+adsMultiF);
+                            System.out.println(GameSettingsFile.get(i));
+                        }
+                        else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity1x=")) {
+                            GameSettingsFile.set(i,"ADSMouseSensitivity1x="+ads1f);
+                            System.out.println(GameSettingsFile.get(i));
+                        }
+                        else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity1xHalf=")) {
+                            GameSettingsFile.set(i,"ADSMouseSensitivity1xHalf="+ads15f);
+                            System.out.println(GameSettingsFile.get(i));
+                        }
+                        else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity2x=")) {
+                            GameSettingsFile.set(i,"ADSMouseSensitivity2x="+ads2f);
+                            System.out.println(GameSettingsFile.get(i));
+                        }
+                        else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity2xHalf=")) {
+                            GameSettingsFile.set(i,"ADSMouseSensitivity2xHalf="+ads25f);
+                            System.out.println(GameSettingsFile.get(i));
+                        }
+                        else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity3x=")) {
+                            GameSettingsFile.set(i,"ADSMouseSensitivity3x="+ads3f);
+                            System.out.println(GameSettingsFile.get(i));
+                        }
+                        else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity4x=")) {
+                            GameSettingsFile.set(i,"ADSMouseSensitivity4x="+ads4f);
+                            System.out.println(GameSettingsFile.get(i));
+                        }
+                        else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity5x=")) {
+                            GameSettingsFile.set(i,"ADSMouseSensitivity5x="+ads5f);
+                            System.out.println(GameSettingsFile.get(i));
+                        }
+                        else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity12x=")) {
+                            GameSettingsFile.set(i,"ADSMouseSensitivity12x="+ads12f);
                             System.out.println(GameSettingsFile.get(i));
                         }
                         
@@ -383,6 +698,36 @@ public class siegesettings {
             sensPanel.add(currentADSMultiplier);
             sensPanel.add(ADSmultiplierTextField);
 
+
+            adsPanel.add(adsGlobalLabel);
+            adsPanel.add(adsGlobalSlider);
+            adsPanel.add(adsSimple);
+
+            adsPanel.add(adsLabel1);
+            adsPanel.add(adsSlider1);
+
+            adsPanel.add(adsLabel15);
+            adsPanel.add(adsSlider15);
+
+            adsPanel.add(adsLabel2);
+            adsPanel.add(adsSlider2);
+
+            adsPanel.add(adsLabel25);
+            adsPanel.add(adsSlider25);
+
+            adsPanel.add(adsLabel3);
+            adsPanel.add(adsSlider3);
+
+            adsPanel.add(adsLabel4);
+            adsPanel.add(adsSlider4);
+
+            adsPanel.add(adsLabel5);
+            adsPanel.add(adsSlider5);
+
+            adsPanel.add(adsLabel12);
+            adsPanel.add(adsSlider12);
+
+
             displayPanel.add(fovLabel);
             displayPanel.add(fovCurrentLabel);
             displayPanel.add(fovSlider);
@@ -426,14 +771,6 @@ public class siegesettings {
             
             // frame.add(fovLabel);
 
-            // temporary shit solution to constantly update values
-            /*
-             * fixed using ChangeListener
-             * while (true){
-             * 
-             * hcurrentSens.setText("Current X Sensitivity: " + hsensSlider.getValue());
-             * }
-             */
         }
         else {
             System.out.println("No GameSettings.ini found");
