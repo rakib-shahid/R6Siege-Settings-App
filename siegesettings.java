@@ -592,8 +592,10 @@ public class siegesettings {
             //////////
             Integer[] fpsList = new Integer[] {0,30, 60, 75, 120, 144, 165, 240};
             JComboBox<Integer> fpsLimitBox = new JComboBox<Integer>(fpsList);
+            fpsLimitBox.setToolTipText("Set to 0 to disable FPS Limit");
             fpsLimitBox.setSelectedItem(fpsLimit);
             JLabel currentfpsLimit = new JLabel("Selected FPS limit: " + Integer.toString(fpsLimit), SwingConstants.CENTER);
+            currentfpsLimit.setToolTipText("Set to 0 to disable FPS Limit");
             fpsLimitBox.addPropertyChangeListener(new PropertyChangeListener() {
 
                 @Override
