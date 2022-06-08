@@ -4,6 +4,9 @@ It's annoying to go into the Documents folder and manually edit lines in GameSet
 
 Provides a UI for easily changing many settings for Rainbow 6 Siege, things like sensitivities and mouse multipliers, display options like fov, refresh rate, etc.
 
+![siegesettings ui](https://user-images.githubusercontent.com/95511504/172519069-51b9271b-8691-49a4-922b-28ccfa36313c.png)
+
+
 
 ### Upon running it creates a backup file of settings in case the user wants to revert, the file is called GameSettings.ini.backup in the same folder as GameSettings.ini
 
