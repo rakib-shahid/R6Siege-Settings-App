@@ -21,6 +21,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -631,7 +632,23 @@ public class siegesettings {
             //  Apply button
             //
             //////////
-            JButton applyButton = new JButton("Apply changes");
+            JButton applyButton = new JButton("Apply Changes");
+            applyButton.addFocusListener(new FocusListener(){
+
+                @Override
+                public void focusGained(FocusEvent e) {
+                    // TODO Auto-generated method stub
+                    
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    if (applyButton.getText().equals("Changes Applied"));
+                    applyButton.setText("Apply Changes");
+                    
+                }
+                
+            });
             applyButton.addActionListener(new ActionListener(){
 
                 @Override
@@ -663,71 +680,71 @@ public class siegesettings {
                         refreshRateF = Double.parseDouble(refreshRates.getSelectedItem().toString());
                         if (GameSettingsFile.get(i).contains("MousePitchSensitivity=")){
                             GameSettingsFile.set(i,"MousePitchSensitivity="+vF);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         else if (GameSettingsFile.get(i).contains("MouseYawSensitivity=")){
                             GameSettingsFile.set(i,"MouseYawSensitivity="+hF);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         else if (GameSettingsFile.get(i).contains("RefreshRate=")) {
                             GameSettingsFile.set(i,"RefreshRate="+refreshRateF);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         //ADD THE UI FOR THESE
                         else if (GameSettingsFile.get(i).contains("FPSLimit=")) {
                             GameSettingsFile.set(i,"FPSLimit="+fpsF);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         else if (GameSettingsFile.get(i).contains("DefaultFOV=")) {
                             GameSettingsFile.set(i,"DefaultFOV="+fovF);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         else if (GameSettingsFile.get(i).contains("MouseSensitivityMultiplierUnit=")) {
                             GameSettingsFile.set(i,"MouseSensitivityMultiplierUnit="+multiplierF);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         else if (GameSettingsFile.get(i).contains("ADSMouseMultiplierUnit=")) {
                             GameSettingsFile.set(i,"ADSMouseMultiplierUnit="+adsMultiF);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity1x=")) {
                             GameSettingsFile.set(i,"ADSMouseSensitivity1x="+ads1f);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity1xHalf=")) {
                             GameSettingsFile.set(i,"ADSMouseSensitivity1xHalf="+ads15f);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity2x=")) {
                             GameSettingsFile.set(i,"ADSMouseSensitivity2x="+ads2f);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity2xHalf=")) {
                             GameSettingsFile.set(i,"ADSMouseSensitivity2xHalf="+ads25f);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity3x=")) {
                             GameSettingsFile.set(i,"ADSMouseSensitivity3x="+ads3f);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity4x=")) {
                             GameSettingsFile.set(i,"ADSMouseSensitivity4x="+ads4f);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity5x=")) {
                             GameSettingsFile.set(i,"ADSMouseSensitivity5x="+ads5f);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         else if (GameSettingsFile.get(i).contains("ADSMouseSensitivity12x=")) {
                             GameSettingsFile.set(i,"ADSMouseSensitivity12x="+ads12f);
-                            System.out.println(GameSettingsFile.get(i));
+                            
                         }
                         else if (GameSettingsFile.get(i).contains("ADSMouseSensitivityGlobal=")) {
                             GameSettingsFile.set(i,"ADSMouseSensitivityGlobal="+adsGlobalF);
-                            System.out.println(GameSettingsFile.get(i));
                         }
                         
                     }
+                    
                     try {
                         for (String x: filepaths){
                             FileWriter fwriter = new FileWriter(x, false);
@@ -739,9 +756,11 @@ public class siegesettings {
                             bwriter.close();
                             System.out.println("Changes applied to file located in " + x.toString());
                         }
+                        applyButton.setText("Changes Applied");
                     } catch (IOException e1) {
                         
                     }
+                    
 
                     
                 }});
