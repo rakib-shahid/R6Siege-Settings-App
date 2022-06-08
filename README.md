@@ -6,6 +6,7 @@
 It's annoying to go into the Documents folder and manually edit lines in GameSettings.ini so I made this.
 
 Provides a UI for easily changing many settings for Rainbow 6 Siege without having to launch the game or find the settings files
+
 Allows you to change things like sensitivities and mouse multipliers, display options like fov, refresh rate, etc.
 
 ![siegesettings ui](https://user-images.githubusercontent.com/95511504/172519069-51b9271b-8691-49a4-922b-28ccfa36313c.png)
