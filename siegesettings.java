@@ -52,8 +52,9 @@ public class siegesettings {
         JPanel displayPanel = new JPanel();
         displayPanel.setLayout(new GridLayout(8,1));
 
-
+        
         JFrame frame = new JFrame();
+        frame.setResizable(false);
         try {
             frame.setIconImage(ImageIO.read(new File("res/r6s48.png")));
         }
