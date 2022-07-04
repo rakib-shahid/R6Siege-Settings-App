@@ -35,6 +35,6 @@ again, if any issues do arrise, delete the GameSettings.ini file and rename the 
 
 ## To-do(?)
 
-Fix the resizing and layout and maybe make it prettier
+Fix the ~~resizing and~~ layout and maybe make it prettier
 
-Add aspect ratios
+Add aspect ratios, graphics settings, and more
