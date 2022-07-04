@@ -19,7 +19,7 @@ The program automatically applies the same settings to all Uplay accounts on the
 
 ## Usage
 
-Download and run the .exe, .jar, or compile the .java yourself
+Download and run the .exe or .jar, or compile the .java file yourself
 
 Use the tabs to navigate between setting categories and hit the apply button to save
 
