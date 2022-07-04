@@ -27,7 +27,7 @@ Use the tabs to navigate between setting categories and hit the apply button to 
 
 there are probably quite a few but it works for me ¯\\_ (ツ) _/¯
 
-The window *really* does not like to be resized so be nice to it and leave it how it is
+~~The window *really* does not like to be resized so be nice to it and leave it how it is~~ The window is no longer resizable
 
 issues may arise when providing invalid inputs for multipliers but it is untested
 
